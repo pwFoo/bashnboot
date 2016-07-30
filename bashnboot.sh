@@ -4,6 +4,7 @@ BUSYBOX="1.25.0"
 KERNEL="4.6.5"
 JOBS="8"
 
+# Creates a clean directory to download/extract and compile busybox.
 staging() {
   mkdir staging && cd "$_"
 
@@ -16,6 +17,7 @@ staging() {
   cd ../..
 }
 
+# Creates the base structure for the file system and creates a simple init.
 initrd() {
   mkdir initrd && cd "$_"
   mkdir -p {bin,sbin,etc,proc,sys,usr/{bin,sbin}}
@@ -35,6 +37,7 @@ EOL
   cd ..
 }
 
+# Compile our kernel and generate our iso.
 kernel() {
   mkdir kernel && cd "$_"
   curl -sL http://kernel.org/pub/linux/kernel/v4.x/linux-${KERNEL}.tar.xz | tar -Jxf -
