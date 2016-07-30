@@ -1,5 +1,5 @@
 # Bash 'n Boot
-
+Extremely minimal Busybox/Linux distrobution in a few short bash functions.
 ```
 $ mkdir build
 $ cd build
