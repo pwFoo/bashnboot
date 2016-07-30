@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 BUSYBOX="1.25.0"
 KERNEL="4.6.5"
