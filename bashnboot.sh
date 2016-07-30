@@ -4,8 +4,8 @@ BUSYBOX="1.25.0"
 KERNEL="4.6.5"
 JOBS="8"
 
-initrd() {
-  mkdir initrd && cd "$_"
+staging() {
+  mkdir staging && cd "$_"
 
   curl -s https://busybox.net/downloads/busybox-${BUSYBOX}.tar.bz2 | tar -jxf -
   cd busybox-${BUSYBOX}/
@@ -16,10 +16,10 @@ initrd() {
   cd ../..
 }
 
-initramfs() {
-  mkdir initramfs && cd "$_"
+initrd() {
+  mkdir initrd && cd "$_"
   mkdir -p {bin,sbin,etc,proc,sys,usr/{bin,sbin}}
-  cp -a ../initrd/busybox-${BUSYBOX}/_install/* .
+  cp -a ../staging/busybox-${BUSYBOX}/_install/* .
 
   cat > init << EOL
 #!/bin/sh
@@ -45,7 +45,7 @@ kernel() {
   cd ../..
 }
 
+staging
 initrd
-initramfs
 kernel
 
