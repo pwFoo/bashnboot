@@ -10,7 +10,7 @@ $ qemu-system-x86_64 -cdrom bashnboot.iso
 ### Optionally
 From within your build directory you can create a .env file such as:
 ```
-cat > .env << EOL
+$ cat > .env << EOL
 # Change the busybox version downloaded and compiled.
 BUSYBOX="1.25.0"
 
@@ -28,4 +28,4 @@ EOL
 - [ ] Separate sources from compiling directories.
 - [ ] Support rebuilting.
 - [ ] More documentation.
-- [ ] Add more options for configuring, cpu arch? init override?
+- [ ] Add more options for configuring, cpu arch? init override? mirrors?
