@@ -11,6 +11,7 @@ ISO_NAME=${NAME:-"bashnboot"}
 sources() {
   mkdir -p sources && cd "$_"
 
+  # Check if we have already downloaded busybox.
   if [ -f busybox-${BUSYBOX_VER}.tar.bz2 ]; then
     echo "Skipping download of busybox; exists"
   else
@@ -18,6 +19,7 @@ sources() {
     curl -sO https://busybox.net/downloads/busybox-${BUSYBOX_VER}.tar.bz2
   fi
 
+  # Check if we have already downloaded the kernel.
   if [ -f linux-${KERNEL_VER}.tar.xz ]; then
     echo "Skipping download of linux; exists"
   else
@@ -49,7 +51,7 @@ busybox() {
 
 # Creates the base structure for the file system and creates a simple init.
 initrd() {
-  mkdir initrd && cd "$_"
+  mkdir -p initrd && cd "$_"
 
   # Create the base filesystem.
   mkdir -p {bin,sbin,etc,proc,sys,usr/{bin,sbin}}
@@ -84,13 +86,18 @@ EOL
 linux() {
   # Extract the kernel.
   tar -Jxf sources/linux-${KERNEL_VER}.tar.xz
+
   cd linux-${KERNEL_VER}
 
   echo "Compiling Linux ${KERNEL_VER}."
 
+  # Compile our kernel (the bzImage part) using the default config (defconfig.)
   make -j${JOBS_NUM} ARCH=x86_64 mrproper defconfig bzImage 2>&1 > /dev/null
+
+  # Construct our isoimage using initrd from the previous step.
   make -j${JOBS_NUM} isoimage FDINITRD=../initrd.gz 2>&1 > /dev/null
 
+  # Copy our iso and rename.
   cp arch/x86/boot/image.iso ../${ISO_NAME}.iso
 
   cd ..
