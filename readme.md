@@ -25,7 +25,6 @@ NAME="bashnboot"
 EOL
 ```
 ## TODO
-- [ ] Separate sources from compiling directories.
 - [ ] Support rebuilting.
 - [ ] More documentation.
 - [ ] Add more options for configuring, cpu arch? init override? mirrors?

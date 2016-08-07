@@ -1,21 +1,38 @@
 #!/bin/sh
 
 set -o allexport
-test -f ./.env && source ./.env
+[ -f ./.env ] && source ./.env
 
 BUSYBOX_VER=${BUSYBOX:-"1.25.0"}
 KERNEL_VER=${KERNEL:-"4.6.5"}
 JOBS_NUM=${JOBS:-"8"}
 ISO_NAME=${NAME:-"bashnboot"}
 
+sources() {
+  mkdir -p sources && cd "$_"
+
+  if [ -f busybox-${BUSYBOX_VER}.tar.bz2 ]; then
+    echo "Skipping download of busybox; exists"
+  else
+    echo "Downloading busybox ${BUSYBOX_VER}."
+    curl -sO https://busybox.net/downloads/busybox-${BUSYBOX_VER}.tar.bz2
+  fi
+
+  if [ -f linux-${KERNEL_VER}.tar.xz ]; then
+    echo "Skipping download of linux; exists"
+  else
+    echo "Downloading Linux ${KERNEL_VER}."
+    curl -sLO http://kernel.org/pub/linux/kernel/v4.x/linux-${KERNEL_VER}.tar.xz
+  fi
+
+  cd ..
+}
+
 # Creates a clean directory to download/extract and compile busybox.
-staging() {
-  mkdir staging && cd "$_"
+busybox() {
+  # Extract busybox.
+  tar -jxf sources/busybox-${BUSYBOX_VER}.tar.bz2
 
-  echo "Downloading busybox ${BUSYBOX_VER}."
-
-  # Download and extract busybox.
-  curl -s https://busybox.net/downloads/busybox-${BUSYBOX_VER}.tar.bz2 | tar -jxf -
   cd busybox-${BUSYBOX_VER}/
 
   echo "Compiling busybox ${BUSYBOX_VER}."
@@ -24,8 +41,10 @@ staging() {
 
   # Set busybox to be statically compiled so it can run on it's own.
   sed -i "s/.*CONFIG_STATIC.*/CONFIG_STATIC=y/" .config
+  # Compile busybox.
   make -j${JOBS_NUM} busybox install 2>&1 > /dev/null
-  cd ../..
+
+  cd ..
 }
 
 # Creates the base structure for the file system and creates a simple init.
@@ -36,7 +55,7 @@ initrd() {
   mkdir -p {bin,sbin,etc,proc,sys,usr/{bin,sbin}}
 
   # Copy all of our executables from busybox into their respective directories.
-  cp -a ../staging/busybox-${BUSYBOX_VER}/_install/* .
+  cp -a ../busybox-${BUSYBOX_VER}/_install/* .
 
   echo "Creating init script."
 
@@ -62,24 +81,23 @@ EOL
 }
 
 # Compile our kernel and generate our iso.
-kernel() {
-  mkdir kernel && cd "$_"
-
-  echo "Downloading Linux ${KERNEL_VER}."
-
-  curl -sL http://kernel.org/pub/linux/kernel/v4.x/linux-${KERNEL_VER}.tar.xz | tar -Jxf -
+linux() {
+  # Extract the kernel.
+  tar -Jxf sources/linux-${KERNEL_VER}.tar.xz
   cd linux-${KERNEL_VER}
 
   echo "Compiling Linux ${KERNEL_VER}."
 
   make -j${JOBS_NUM} ARCH=x86_64 mrproper defconfig bzImage 2>&1 > /dev/null
-  make -j${JOBS_NUM} isoimage FDINITRD=../../initrd.gz 2>&1 > /dev/null
+  make -j${JOBS_NUM} isoimage FDINITRD=../initrd.gz 2>&1 > /dev/null
 
-  cp arch/x86/boot/image.iso ../../${ISO_NAME}.iso
-  cd ../..
+  cp arch/x86/boot/image.iso ../${ISO_NAME}.iso
+
+  cd ..
 }
 
-staging
+sources
+busybox
 initrd
-kernel
+linux
 
