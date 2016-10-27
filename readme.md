@@ -25,6 +25,6 @@ NAME="bashnboot"
 EOL
 ```
 ## TODO
-- [ ] Support rebuilting.
+- [ ] Support rebuilding.
 - [ ] More documentation.
 - [ ] Add more options for configuring, cpu arch? init override? mirrors?
