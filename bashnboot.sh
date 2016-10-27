@@ -3,9 +3,9 @@
 set -o allexport
 [ -f ./.env ] && source ./.env
 
-BUSYBOX_VER=${BUSYBOX:-"1.25.0"}
-KERNEL_VER=${KERNEL:-"4.6.5"}
-JOBS_NUM=${JOBS:-"8"}
+BUSYBOX_VER=${BUSYBOX:-"1.25.1"}
+KERNEL_VER=${KERNEL:-"4.8.4"}
+JOBS_NUM=${JOBS:-"9"}
 ISO_NAME=${NAME:-"bashnboot"}
 
 sources() {

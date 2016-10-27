@@ -12,10 +12,10 @@ From within your build directory you can create a .env file such as:
 ```
 $ cat > .env << EOL
 # Change the busybox version downloaded and compiled.
-BUSYBOX="1.25.0"
+BUSYBOX="1.25.1"
 
 # Change the Linux kernel version downloaded and compiled.
-KERNEL="4.6.5"
+KERNEL="4.8.4"
 
 # Number of compile jobs used when compiling the above.
 JOBS="9"
