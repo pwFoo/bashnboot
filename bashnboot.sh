@@ -54,7 +54,7 @@ initrd() {
   mkdir -p initrd && cd "$_"
 
   # Create the base filesystem.
-  mkdir -p {bin,sbin,etc,proc,sys,usr/{bin,sbin}}
+  mkdir -p {bin,sbin,etc,proc,sys,dev,usr/{bin,sbin}}
 
   # Copy all of our executables from busybox into their respective directories.
   cp -a ../busybox-${BUSYBOX_VER}/_install/* .
