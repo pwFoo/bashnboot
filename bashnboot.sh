@@ -4,7 +4,7 @@ set -o allexport
 [ -f ./.env ] && source ./.env
 
 BUSYBOX_VER=${BUSYBOX:-"1.25.1"}
-KERNEL_VER=${KERNEL:-"4.8.4"}
+KERNEL_VER=${KERNEL:-"4.8.12"}
 JOBS_NUM=${JOBS:-"9"}
 ISO_NAME=${NAME:-"bashnboot"}
 

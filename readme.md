@@ -15,7 +15,7 @@ $ cat > .env << EOL
 BUSYBOX="1.25.1"
 
 # Change the Linux kernel version downloaded and compiled.
-KERNEL="4.8.4"
+KERNEL="4.8.12"
 
 # Number of compile jobs used when compiling the above.
 JOBS="9"
